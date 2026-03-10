@@ -16,23 +16,25 @@ const { registerActivityEmitter } = require('./src/sockets/activity');
 const app = express();
 const server = http.createServer(app);
 
+// Allow CORS from any origin (safe enough for this demo app).
+const corsOptions = {
+  origin: (origin, callback) => {
+    callback(null, true);
+  },
+  credentials: true
+};
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    ...corsOptions,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
 registerActivityEmitter(io);
 
 // Middleware
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true
-  })
-);
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('dev'));
 
