@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// Decide API base URL at runtime so it still works
+// even if Vercel env vars are missing.
+const runtimeBase =
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    ? 'https://digitek.onrender.com'
+    : '/api');
+
 const api = axios.create({
-  baseURL: '/api'
+  baseURL: runtimeBase
 });
 
 api.interceptors.request.use((config) => {
@@ -14,4 +22,5 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
 

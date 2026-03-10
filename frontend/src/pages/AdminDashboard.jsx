@@ -4,7 +4,13 @@ import Sidebar from '../components/layout/Sidebar';
 import TopBar from '../components/layout/TopBar';
 import api from '../utils/apiClient';
 
-const socket = io('/', { path: '/socket.io' });
+const socketBaseUrl =
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')
+    ? 'https://digitek.onrender.com'
+    : '/');
+
+const socket = io(socketBaseUrl, { path: '/socket.io' });
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
